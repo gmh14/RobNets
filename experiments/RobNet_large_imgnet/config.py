@@ -1,21 +1,23 @@
-model = 'robnet_free'
-model_param = dict(C=36,
-                   num_classes=10,
+model = 'robnet_large_v1'
+model_param = dict(C=48,
+                   num_classes=1000,
                    layers=20,
                    steps=4,
                    multiplier=4,
                    stem_multiplier=3,
-                   share=False,
-                   AdPoolSize=1)
-dataset = 'cifar10'
-dataset_param = dict(data_root='../data/cifar10',
+                   share=True,
+                   ImgNetBB=True)
+dataset = 'ImgNet'
+dataset_param = dict(data_root='../data/ImgNet',
+                     resize_size=256,
+                     input_img_size=224,
                      batch_size=32,
                      num_workers=2)
 report_freq = 10
 seed = 10
 gpu = 1
 save_path = './log'
-resume_path = './checkpoint/RobNet_free_cifar10.pth.tar'
+resume_path = './checkpoint/RobNet_large_v1_imgnet.pth.tar'
 
 # Attack Params
 attack_param = {'attack': True,

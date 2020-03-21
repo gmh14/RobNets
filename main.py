@@ -63,16 +63,7 @@ def main():
     # Load checkpoint.
     if not Debug:
         print('==> Resuming from checkpoint..')
-        # TODO
-        # utils.load_state(cfg.resume_path, net)
-        # utils.trans_state(cfg.resume_path, net, arch_code[0])
-        utils.trans_state_free(cfg.resume_path, net, arch_code)
-        # exit(0)
-    # state = {
-    #     'state_dict': net.state_dict()
-    # }
-    # utils.save_checkpoint(state, True, os.path.join(cfg.save_path))
-    # exit(0)
+        utils.load_state(cfg.resume_path, net)
 
     # Data
     print('==> Preparing data..')
@@ -82,7 +73,7 @@ def main():
     net_adv = AttackPGD(net, cfg.attack_param)
 
     print('==> Testing on Clean Data')
-    # test(net, testloader, criterion)
+    test(net, testloader, criterion)
 
     print('==> Testing on Adversarial Data')
     test(net_adv, testloader, criterion, adv=True)

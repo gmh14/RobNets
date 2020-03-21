@@ -180,124 +180,6 @@ def load_state(path, model, optimizer=None, scheduler=None):
         print("=> no checkpoint found at '{}'".format(path))
 
 
-def trans_state(path, model, net_code):
-    def map_func(storage, location):
-        return storage.cuda()
-
-    checkpoint = torch.load(path, map_location=map_func)
-    state_dict = checkpoint['state_dict']
-    own_state = model.state_dict()
-    # print('own_state:', own_state.keys())
-    # print('ckpt state_dict:', state_dict.keys())
-    used_keys = []
-    for name, param in state_dict.items():
-        origin_name = name[:]
-        names = name.split('.')
-        if names[0] == 'module':
-            names = names[1:]
-        if len(names) < 3:
-            names = names[:]
-        elif names[0] == 'stem' or names[2] == 'preprocess0' or names[2] == 'preprocess1':
-            names = names[:]
-        elif net_code[int(names[3])] == '01':
-            names = names[:4] + ['op'] + names[6:]
-        elif net_code[int(names[3])] == '11':
-            if int(names[5]) == 1:
-                names = names[:4] + ['op'] + ['res'] + names[6:]
-            else:
-                names = names[:4] + ['op'] + ['conv'] + names[6:]
-        elif net_code[int(names[3])] == '10' and names[6] != 'op':
-            names = names[:4] + ['op'] + names[6:]
-        else:
-            continue
-
-        name = '.'.join(names)
-        if name in own_state:
-            used_keys.append(name)
-            if isinstance(param, nn.Parameter):
-                # backwards compatibility for serialized parameters
-                param = param.data
-            try:
-                own_state[name].copy_(param)
-                if own_state[name].size() != param.size():
-                    raise
-            except Exception:
-                raise RuntimeError('While copying the parameter named {}, '
-                                   'whose dimensions in the model are {} and '
-                                   'whose dimensions in the checkpoint are {}.'
-                                   .format(name, own_state[name].size(), param.size()))
-        else:
-            print('unexpected key "{}" in state_dict'
-                  .format(name))
-            continue
-            raise KeyError('unexpected key "{}" in state_dict'
-                           .format(name))
-    missing = set(own_state.keys()) - set(used_keys)
-    if len(missing) > 0:
-        print(missing)
-        raise KeyError('missing keys in state_dict: "{}"'.format(missing))
-
-
-def trans_state_free(path, model, net_code):
-    def map_func(storage, location):
-        return storage.cuda()
-
-    checkpoint = torch.load(path, map_location=map_func)
-    state_dict = checkpoint['state_dict']
-    own_state = model.state_dict()
-    print('own_state:', own_state.keys())
-    print('ckpt state_dict:', state_dict.keys())
-    used_keys = []
-    for name, param in state_dict.items():
-        origin_name = name[:]
-        names = name.split('.')
-        if names[0] == 'module':
-            names = names[1:]
-
-        if len(names) < 3:
-            names = names[:]
-        elif names[0] == 'stem' or names[2] == 'preprocess0' or names[2] == 'preprocess1':
-            names = names[:]
-        elif net_code[int(names[1])][int(names[3])] == '01':
-            names = names[:4] + ['op'] + names[6:]
-        elif net_code[int(names[1])][int(names[3])] == '11':
-            if int(names[5]) == 1:
-                names = names[:4] + ['op'] + ['res'] + names[6:]
-            else:
-                names = names[:4] + ['op'] + ['conv'] + names[6:]
-        elif net_code[int(names[1])][int(names[3])] == '10' and names[6] != 'op':
-            names = names[:4] + ['op'] + names[6:]
-        else:
-            continue
-
-        name = '.'.join(names)
-        print(name, origin_name)
-        if name in own_state:
-            used_keys.append(name)
-            if isinstance(param, nn.Parameter):
-                # backwards compatibility for serialized parameters
-                param = param.data
-            try:
-                own_state[name].copy_(param)
-                if own_state[name].size() != param.size():
-                    raise
-            except Exception:
-                raise RuntimeError('While copying the parameter named {}, '
-                                   'whose dimensions in the model are {} and '
-                                   'whose dimensions in the checkpoint are {}.'
-                                   .format(name, own_state[name].size(), param.size()))
-        else:
-            print('unexpected key "{}" in state_dict'
-                  .format(name))
-            continue
-            raise KeyError('unexpected key "{}" in state_dict'
-                           .format(name))
-    missing = set(own_state.keys()) - set(used_keys)
-    if len(missing) > 0:
-        print(missing)
-        raise KeyError('missing keys in state_dict: "{}"'.format(missing))
-
-
 def create_logger(name, log_file, level=logging.INFO):
     l = logging.getLogger(name)
     formatter = logging.Formatter(
@@ -373,10 +255,6 @@ def param_group_no_wd(model, gate_param_name_group=[]):
 
 def create_exp_dir(path, scripts_to_save=None):
     if not os.path.exists(path):
-        # for i in range(len(path.split('/'))):
-        #     if path.split('/')[i] == '.':
-        #         continue
-        #     os.mkdir(path.split('/')[i])
         os.makedirs(path)
     print('Experiment dir : {}'.format(path))
     if scripts_to_save is not None:
