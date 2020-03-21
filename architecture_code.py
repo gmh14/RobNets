@@ -1,5 +1,3 @@
-# RobNet_small = []
-# RobNet_medium = []
 robnet_large_v1 = robnet_large_v2 = [['11', '11',
                                       '11', '11',
                                       '11', '01',
