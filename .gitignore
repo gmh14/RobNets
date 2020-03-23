@@ -1,3 +1,14 @@
-.DS_store
-.env
+.idea/*
+__pycache__/
+
 .git
+.DS_store
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
