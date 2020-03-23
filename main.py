@@ -1,7 +1,4 @@
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
 
 import sys
@@ -72,10 +69,10 @@ def main():
     criterion = nn.CrossEntropyLoss()
     net_adv = AttackPGD(net, cfg.attack_param)
 
-    print('==> Testing on Clean Data')
+    print('==> Testing on Clean Data..')
     test(net, testloader, criterion)
 
-    print('==> Testing on Adversarial Data')
+    print('==> Testing on Adversarial Data..')
     test(net_adv, testloader, criterion, adv=True)
 
 
@@ -117,8 +114,7 @@ def test(net, testloader, criterion, adv=False):
     final_top1 = top1.avg
     final_top5 = top5.avg
 
-    logger.info(' * Prec@1 {:.3f}\tPrec@5 {:.3f}\tLoss {:.3f}\t'.format(
-        final_top1, final_top5, final_loss))
+    logger.info(' * Prec@1 {:.3f}\tPrec@5 {:.3f}\tLoss {:.3f}\t'.format(final_top1, final_top5, final_loss))
 
     return final_top1
 
