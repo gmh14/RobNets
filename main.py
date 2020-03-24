@@ -21,7 +21,9 @@ from attack import *
 Debug = False
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--config', type=str, help='location of the config file')
+parser.add_argument('--config', '-c', type=str, default='./experiments/RobNet_free_cifar10/config.py',
+                    help='location of the config file')
+parser.set_defaults(augment=True)
 args = parser.parse_args()
 
 
