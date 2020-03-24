@@ -1,3 +1,5 @@
+numpy
 mmcv
-torch
 scipy
+torch
+torchvision
