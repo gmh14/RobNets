@@ -28,6 +28,17 @@ To conduct a specific experiment, e.g. `RobNet_free` for CIFAR10, run
 python main.py --config='./experiments/RobNet_free_cifar10/config.py'
 ```
 
+## Load our RobNet-free for CIFAR10
+```
+import models
+import architecture_code
+
+net = models.robnet(architecture_code.robnet_free)
+net = net.cuda()
+net.load_state_dict(torch.load('./checkpoint/RobNet_free_cifar10.pth.tar'))
+```
+For other models, the loading process is similar, just copy the corresponding parameters (you can find in the variable `model_param` in each `experiments/*/config.py`) to the function `models.robnet()`.
+
 ## Acknowledgements
 The implementation of RobNets is partly based on [this work](https://github.com/quark0/darts).
 
