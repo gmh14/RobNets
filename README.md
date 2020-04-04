@@ -1,14 +1,16 @@
 # When NAS Meets Robustness: In Search of Robust Architectures against Adversarial Attacks 
-This repository contains the implementation code for paper [When NAS Meets Robustness: In Search of Robust Architectures against Adversarial Attacks](https://arxiv.org/abs/1911.10695) (__CVPR2020__). Also see the [project page](http://www.mit.edu/~yuzhe/robnets.html).
+This repository contains the implementation code for paper [When NAS Meets Robustness: In Search of Robust Architectures against Adversarial Attacks](https://arxiv.org/abs/1911.10695) (__CVPR 2020__). Also check out the [project page](http://www.mit.edu/~yuzhe/robnets.html).
 
 In this work, we take an architectural perspective and investigate the patterns of network architectures that are resilient to adversarial attacks. We discover a family of robust architectures (__RobNets__), which exhibit superior robustness performance to other widely used architectures.
+
+![overview](assets/robnets.png)
 
 ## Installation
 
 ### Prerequisites
-- __Data__ Download the [CIFAR10](https://www.cs.toronto.edu/~kriz/cifar.html), [SVHN](http://ufldl.stanford.edu/housenumbers/) and [ImageNet](http://image-net.org/download) dataset and move the test/validation set to the folder `data/`.
+- __Data:__ Download the [CIFAR10](https://www.cs.toronto.edu/~kriz/cifar.html), [SVHN](http://ufldl.stanford.edu/housenumbers/) and [ImageNet](http://image-net.org/download) dataset and move the test/validation set to the folder `data/`.
 
-- __Model__ Download the [pre-trained models](https://drive.google.com/file/d/1h2JLcumQgS296Su950ZEtiJrEgxWzxfP/view?usp=sharing) and unziped to the folder `checkpoint`.
+- __Model:__ Download the [pre-trained models](https://drive.google.com/file/d/1h2JLcumQgS296Su950ZEtiJrEgxWzxfP/view?usp=sharing) and unzip to the folder `checkpoint/`.
 
 
 ### Dependencies for RobNets 
@@ -19,10 +21,10 @@ pip install -r requirements.txt
 
 
 ## Experiments
-All the configurations of the experiments are provided in the folders `experiments/*/config.py`, including different datasets and RobNet architectures. You can directly modify them to suit you demand.
+All the configurations of the experiments are provided in folders `experiments/*/config.py`, including different datasets and RobNet architectures. You can directly modify them to suit your demand.
 
 To conduct a specific experiment, e.g. `RobNet_free` for CIFAR10, run
-```
+```bash
 python main.py --config='./experiments/RobNet_free_cifar10/config.py'
 ```
 
