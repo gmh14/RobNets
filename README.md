@@ -1,5 +1,5 @@
 # When NAS Meets Robustness: In Search of Robust Architectures against Adversarial Attacks 
-This repository contains the implementation code for paper [When NAS Meets Robustness: In Search of Robust Architectures against Adversarial Attacks](https://arxiv.org/abs/1911.10695) (__CVPR2020__).
+This repository contains the implementation code for paper [When NAS Meets Robustness: In Search of Robust Architectures against Adversarial Attacks](https://arxiv.org/abs/1911.10695) (__CVPR2020__). Also see the [project page](http://www.mit.edu/~yuzhe/robnets.html).
 
 In this work, we take an architectural perspective and investigate the patterns of network architectures that are resilient to adversarial attacks. We discover a family of robust architectures (__RobNets__), which exhibit superior robustness performance to other widely used architectures.
 
@@ -35,7 +35,7 @@ If you find the idea or code useful for your research, please cite [our paper](h
 ```bib
 @article{guo2019meets,
   title={When NAS Meets Robustness: In Search of Robust Architectures against Adversarial Attacks},
-  author={Guo, Minghao and Yang, Yuzhe and Xu, Rui and Liu, Ziwei},
+  author={Guo, Minghao and Yang, Yuzhe and Xu, Rui and Liu, Ziwei and Lin, Dahua},
   journal={arXiv preprint arXiv:1911.10695},
   year={2019}
 }
