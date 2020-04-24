@@ -34,12 +34,13 @@ To use the searched RobNet models, for example, load `RobNet_free` on CIFAR10:
 ```python
 import models
 import architecture_code
+import utils
 
 # use RobNet architecture
 net = models.robnet(architecture_code.robnet_free)
 net = net.cuda()
 # load pre-trained model
-net.load_state_dict(torch.load('./checkpoint/RobNet_free_cifar10.pth.tar'))
+utils.load_state('./checkpoint/RobNet_free_cifar10.pth.tar', net)
 ```
 For other models, the loading process is similar, just copy the corresponding parameters (you can find in the variable `model_param` in each `experiments/*/config.py`) to the function `models.robnet()`.
 
