@@ -43,6 +43,8 @@ GPUS_PER_NODE=8 GPUS=32 bash slurm_train.sh **PartitionName** './experiments/Rob
 
 `RobNet_free_cifar10` and `RobNet_large_v1_cifar10` in `checkpoint/` are obtained with a total training batch size `1536`, while `RobNet_large_v2_cifar10` with batch size `1024`. Make sure to linearly scale the learning rate if you have a different batch size. (In fact, the hyper-parameters here are not optimized sufficiently by trial and error. If you find a better combination, welcome to deliver PR!)
 
+Note: You may notice that some of the training configurations are slightly different from the original paper, such as the learning rate scheduler. However, the tranining configurations in this repo can yeild even better results than those in the paper. Check the training log of `RobNet_large_v1_cifar10`[here](https://drive.google.com/file/d/11S1F2-B4Lm5Sc7uFBE4bh8-QItwE2Stf/view?usp=sharing) using the script in this repo.
+
 ## Use RobNet Architectures
 To use the searched RobNet models, for example, load `RobNet_free` on CIFAR10:
 ```python
