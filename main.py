@@ -81,7 +81,7 @@ def main():
     print('==> Setting train parameters..')
     train_param = cfg.train_param
     epochs = train_param.epochs
-    init_lr = cfg.train_param
+    init_lr = train_param.learning_rate
     if train_param.get('warm_up_param', False):
         warm_up_param = train_param.warm_up_param
         init_lr = warm_up_param.warm_up_base_lr
@@ -93,7 +93,6 @@ def main():
     else:
         optimizer = torch.optim.SGD(net.parameters(), lr=init_lr, momentum=train_param.momentum, weight_decay=train_param.weight_decay)
 
-    #TODO check if no warm_up
     scheduler = lr_scheduler.CosineLRScheduler(optimizer, epochs, train_param.learning_rate_min, init_lr, train_param.learning_rate, (warm_up_param.warm_up_epochs if train_param.get('warm_up_param', False) else 0))
     # Log
     print('==> Writing log..')
@@ -136,9 +135,8 @@ def main():
                      'best_acc': best_acc,
                      'optimizer': optimizer.state_dict(),
                      'state_dict': net.state_dict(),
-                     'scheduler': scheduler} # TODO check the schedu;er
+                     'scheduler': scheduler} 
             utils.save_checkpoint(state, is_best, os.path.join(cfg.save))
-    # TODO check all there results on single card
 
 
 def train(net, trainloader, criterion, optimizer):

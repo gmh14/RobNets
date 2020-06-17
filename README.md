@@ -21,13 +21,27 @@ pip install -r requirements.txt
 
 
 ## Experiments
+
+### Test
+
 All the configurations of the experiments are provided in folders `experiments/*/config.py`, including different datasets and RobNet architectures. You can directly modify them to suit your demand.
 
 To conduct a specific experiment, e.g. `RobNet_free` for CIFAR10, run
 ```bash
-python main.py --config='./experiments/RobNet_free_cifar10/config.py'
+python main.py --config='./experiments/RobNet_free_cifar10/config.py' --eval_only
+```
+With the flag `eval_only`, you can test the results for all the experiments in `experiments`.
+
+### Train (NEW)
+
+We also provide the training interface of RobNets. For now, only training on CIFAR10 is provided. Training on ImageNet is WIP. 
+
+We use [Pytorch distributed training](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html) with [slurm](https://slurm.schedmd.com/tutorials.html) and [nccl](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/overview.html) backend. You can conduct the training for `RobNet_large` on CIFAR10 by running
+```bash
+GPUS_PER_NODE=8 GPUS=32 bash slurm_train.sh VI_SP_VA_V100 './experiments/RobNet_large_cifar10/config.py'
 ```
 
+`RobNet_free_cifar10` and `RobNet_large_v1_cifar10` in `checkpoint/` are obtained with a total training batch size `1536`, while `RobNet_large_v2_cifar10` with batch size `1024`. Make sure to linearly scale the learning rate if you have a different batch size. (In fact, the hyper-parameters here are not optimized sufficiently by trial and error. If you find a better combination, welcome to deliver PR!)
 
 ## Use RobNet Architectures
 To use the searched RobNet models, for example, load `RobNet_free` on CIFAR10:
