@@ -57,12 +57,17 @@ def main():
 
     cfg.netpara = sum(p.numel() for p in net.parameters()) / 1e6
 
+    start_epoch = 0
+    best_acc = 0
     # Load checkpoint.
     if cfg.get('resume_path', False):
-        print('==> Resuming from checkpoint..')
-        utils.load_state(cfg.resume_path, net, rank=rank)
-    if args.distributed:
-        net = torch.nn.parallel.DistributedDataParallel(net, device_ids=[torch.cuda.current_device()], output_device=torch.cuda.current_device())
+        print('==> Resuming from {}checkpoint {}..'.format(('original ' if cfg.resume_path.origin_ckpt else ''), cfg.resume_path.path))
+        if cfg.resume_path.origin_ckpt:
+            utils.load_state(cfg.resume_path.path, net, rank=rank)
+        else:
+            if args.distributed:
+                net = torch.nn.parallel.DistributedDataParallel(net, device_ids=[torch.cuda.current_device()], output_device=torch.cuda.current_device())
+            utils.load_state(cfg.resume_path.path, net, rank=rank)
 
     # Data
     print('==> Preparing data..')
@@ -101,7 +106,7 @@ def main():
 
     # Evaluation only
     if args.eval_only:
-        assert (not cfg.get('resume_path', False)), 'Should set the resume path for the eval_only mode'
+        assert cfg.get('resume_path', False), 'Should set the resume path for the eval_only mode'
         print('==> Testing on Clean Data..')
         test(net, testloader, criterion)
         print('==> Testing on Adversarial Data..')
@@ -109,7 +114,7 @@ def main():
         return
 
     # Training process
-    for epoch in range(epochs):
+    for epoch in range(start_epoch, epochs):
         train_sampler.set_epoch(epoch)
         test_sampler.set_epoch(epoch)
         scheduler.step()
@@ -117,13 +122,13 @@ def main():
             logger.info('Epoch %d learning rate %e', epoch, scheduler.get_lr()[0])
         
         # Train for one epoch
-        train(trainloader, net_adv, criterion, optimizer)
+        train(net_adv, trainloader, criterion, optimizer)
 
         # Validate for one epoch
-        valid_acc = test(testloader, net_adv, criterion, adv=True)
+        valid_acc = test(net_adv, testloader, criterion, adv=True)
 
         if rank == 0:
-            logger.info('Validation Accuracy', valid_acc)
+            logger.info('Validation Accuracy: {}'.format(valid_acc))
             is_best = valid_acc > best_acc
             best_acc = max(valid_acc, best_acc)
             print('==> Saving')
@@ -132,11 +137,11 @@ def main():
                      'optimizer': optimizer.state_dict(),
                      'state_dict': net.state_dict(),
                      'scheduler': scheduler} # TODO check the schedu;er
-            utils.save_checkpoints(state, is_best, os.path.join(cfg.save))
+            utils.save_checkpoint(state, is_best, os.path.join(cfg.save))
     # TODO check all there results on single card
 
 
-def train(trainloader, net, criterion, optimizer):
+def train(net, trainloader, criterion, optimizer):
     objs = utils.AverageMeter(cfg.report_freq)
     top1 = utils.AverageMeter(cfg.report_freq)
     top5 = utils.AverageMeter(cfg.report_freq)
@@ -156,7 +161,7 @@ def train(trainloader, net, criterion, optimizer):
         loss.backward()
         optimizer.step()
 
-        reduced_loss = loss.clone()
+        reduced_loss = loss.clone() / world_size
         reduced_prec1 = prec1.clone() / world_size
         reduced_prec5 = prec5.clone() / world_size
         if args.distributed:

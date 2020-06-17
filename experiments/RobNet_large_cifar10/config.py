@@ -18,7 +18,7 @@ dataset_param = dict(data_root='./data/cifar10',
 report_freq = 10
 seed = 10
 save_path = './log'
-# resume_path = './checkpoint/RobNet_large_v1_cifar10.pth.tar'
+resume_path = dict(path='./checkpoint/RobNet_large_v1_cifar10.pth.tar', origin_ckpt=True)
 
 # Train Params
 train_param = dict(learning_rate=1.2,

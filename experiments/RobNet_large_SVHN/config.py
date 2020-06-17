@@ -13,9 +13,8 @@ dataset_param = dict(data_root='../data/SVHN',
                      num_workers=2)
 report_freq = 10
 seed = 10
-gpu = 1
 save_path = './log'
-resume_path = './checkpoint/RobNet_large_v1_SVHN.pth.tar'
+resume_path = dict(path='./checkpoint/RobNet_large_v1_SVHN.pth.tar', origin_ckpt=True)
 
 # Attack Params
 attack_param = {'attack': True,
