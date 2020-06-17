@@ -38,7 +38,7 @@ We also provide the training interface of RobNets. For now, only training on CIF
 
 We use [Pytorch distributed training](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html) with [slurm](https://slurm.schedmd.com/tutorials.html) and [nccl](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/overview.html) backend. You can conduct the training for `RobNet_large` on CIFAR10 by running
 ```bash
-GPUS_PER_NODE=8 GPUS=32 bash slurm_train.sh VI_SP_VA_V100 './experiments/RobNet_large_cifar10/config.py'
+GPUS_PER_NODE=8 GPUS=32 bash slurm_train.sh **PartitionName** './experiments/RobNet_large_cifar10/config.py'
 ```
 
 `RobNet_free_cifar10` and `RobNet_large_v1_cifar10` in `checkpoint/` are obtained with a total training batch size `1536`, while `RobNet_large_v2_cifar10` with batch size `1024`. Make sure to linearly scale the learning rate if you have a different batch size. (In fact, the hyper-parameters here are not optimized sufficiently by trial and error. If you find a better combination, welcome to deliver PR!)
