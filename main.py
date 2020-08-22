@@ -72,9 +72,9 @@ def main():
     # Data
     print('==> Preparing data..')
     if args.eval_only:
-        testloader = dataset_entry(cfg, args.distributed)
+        testloader = dataset_entry(cfg, args.distributed, args.eval_only)
     else:
-        trainloader, testloader, train_sampler, test_sampler = dataset_entry(cfg, args.distributed)
+        trainloader, testloader, train_sampler, test_sampler = dataset_entry(cfg, args.distributed, args.eval_only)
     criterion = nn.CrossEntropyLoss()
     if not args.eval_only:
         cfg.attack_param.num_steps = 7

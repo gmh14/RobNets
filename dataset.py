@@ -9,11 +9,11 @@ import utils
 from mmcv.runner import get_dist_info
 
 
-def dataset_entry(cfg, distributed):
-    return globals()[cfg.dataset](distributed=distributed, **cfg.dataset_param)
+def dataset_entry(cfg, distributed, eval_only):
+    return globals()[cfg.dataset](distributed=distributed, eval_only=eval_only, **cfg.dataset_param)
 
 
-def cifar10(data_root, batch_size, num_workers, distributed, cutout=False):
+def cifar10(data_root, batch_size, num_workers, distributed, cutout=False, eval_only=True):
     transform_train = transforms.Compose([
         transforms.RandomCrop(32, padding=4),
 	transforms.RandomHorizontalFlip(),
@@ -37,6 +37,8 @@ def cifar10(data_root, batch_size, num_workers, distributed, cutout=False):
 
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, sampler=train_sampler, num_workers=num_workers, shuffle=(train_sampler is None))
     testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, sampler=test_sampler, num_workers=num_workers)
+    if eval_only:
+        return testloader
     return trainloader, testloader, train_sampler, test_sampler
 
 
