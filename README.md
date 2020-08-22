@@ -10,7 +10,7 @@ In this work, we take an architectural perspective and investigate the patterns 
 ### Prerequisites
 - __Data:__ Download the [CIFAR10](https://www.cs.toronto.edu/~kriz/cifar.html), [SVHN](http://ufldl.stanford.edu/housenumbers/) and [ImageNet](http://image-net.org/download) dataset and move the test/validation set to the folder `data/`.
 
-- __Model:__ Download the [pre-trained models](https://drive.google.com/file/d/1h2JLcumQgS296Su950ZEtiJrEgxWzxfP/view?usp=sharing) and unzip to the folder `checkpoint/`.
+- __Model:__ Download the [pre-trained models](https://drive.google.com/file/d/12Dkycpdyo7el-SmwImFzp0-NIhGt3-AT/view?usp=sharing) and unzip to the folder `checkpoint/`.
 
 
 ### Dependencies for RobNets 
