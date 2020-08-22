@@ -71,29 +71,33 @@ def main():
 
     # Data
     print('==> Preparing data..')
-    trainloader, testloader, train_sampler, test_sampler = dataset_entry(cfg, args.distributed)
+    if args.eval_only:
+        testloader = dataset_entry(cfg, args.distributed)
+    else:
+        trainloader, testloader, train_sampler, test_sampler = dataset_entry(cfg, args.distributed)
     criterion = nn.CrossEntropyLoss()
     if not args.eval_only:
         cfg.attack_param.num_steps = 7
     net_adv = AttackPGD(net, cfg.attack_param)
 
-    # Train params
-    print('==> Setting train parameters..')
-    train_param = cfg.train_param
-    epochs = train_param.epochs
-    init_lr = train_param.learning_rate
-    if train_param.get('warm_up_param', False):
-        warm_up_param = train_param.warm_up_param
-        init_lr = warm_up_param.warm_up_base_lr
-        epochs += warm_up_param.warm_up_epochs
-    if train_param.get('no_wd', False):
-        param_group, type2num, _, _ = utils.param_group_no_wd(net)
-        cfg.param_group_no_wd = type2num
-        optimizer = torch.optim.SGD(param_group, lr=init_lr, momentum=train_param.momentum, weight_decay=train_param.weight_decay)
-    else:
-        optimizer = torch.optim.SGD(net.parameters(), lr=init_lr, momentum=train_param.momentum, weight_decay=train_param.weight_decay)
+    if not args.eval_only:
+        # Train params
+        print('==> Setting train parameters..')
+        train_param = cfg.train_param
+        epochs = train_param.epochs
+        init_lr = train_param.learning_rate
+        if train_param.get('warm_up_param', False):
+            warm_up_param = train_param.warm_up_param
+            init_lr = warm_up_param.warm_up_base_lr
+            epochs += warm_up_param.warm_up_epochs
+        if train_param.get('no_wd', False):
+            param_group, type2num, _, _ = utils.param_group_no_wd(net)
+            cfg.param_group_no_wd = type2num
+            optimizer = torch.optim.SGD(param_group, lr=init_lr, momentum=train_param.momentum, weight_decay=train_param.weight_decay)
+        else:
+            optimizer = torch.optim.SGD(net.parameters(), lr=init_lr, momentum=train_param.momentum, weight_decay=train_param.weight_decay)
 
-    scheduler = lr_scheduler.CosineLRScheduler(optimizer, epochs, train_param.learning_rate_min, init_lr, train_param.learning_rate, (warm_up_param.warm_up_epochs if train_param.get('warm_up_param', False) else 0))
+        scheduler = lr_scheduler.CosineLRScheduler(optimizer, epochs, train_param.learning_rate_min, init_lr, train_param.learning_rate, (warm_up_param.warm_up_epochs if train_param.get('warm_up_param', False) else 0))
     # Log
     print('==> Writing log..')
     if rank == 0:

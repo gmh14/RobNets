@@ -1,6 +1,6 @@
 model = 'robnet_large_v1'
 model_param = dict(C=36,
-                   num_classes=100,
+                   num_classes=10,
                    layers=20,
                    steps=4,
                    multiplier=4,
