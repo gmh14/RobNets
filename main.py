@@ -75,6 +75,7 @@ def main():
         testloader = dataset_entry(cfg, args.distributed, args.eval_only)
     else:
         trainloader, testloader, train_sampler, test_sampler = dataset_entry(cfg, args.distributed, args.eval_only)
+        print(trainloader, testloader, train_sampler, test_sampler)
     criterion = nn.CrossEntropyLoss()
     if not args.eval_only:
         cfg.attack_param.num_steps = 7
@@ -118,8 +119,9 @@ def main():
 
     # Training process
     for epoch in range(start_epoch, epochs):
-        train_sampler.set_epoch(epoch)
-        test_sampler.set_epoch(epoch)
+        if args.distributed:
+            train_sampler.set_epoch(epoch)
+            test_sampler.set_epoch(epoch)
         scheduler.step()
         if rank == 0:
             logger.info('Epoch %d learning rate %e', epoch, scheduler.get_lr()[0])
